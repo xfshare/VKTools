@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04B486471B31690B00039A74 /* VKShowLargeImgCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B486461B31690B00039A74 /* VKShowLargeImgCollectionViewCell.m */; };
+		04B4864C1B316E8100039A74 /* VKShowLargeImgData.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B4864B1B316E8100039A74 /* VKShowLargeImgData.m */; };
 		04CF1D471AE79A1A00F375C0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CF1D461AE79A1A00F375C0 /* main.m */; };
 		04CF1D4A1AE79A1A00F375C0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CF1D491AE79A1A00F375C0 /* AppDelegate.m */; };
 		04CF1D4D1AE79A1A00F375C0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CF1D4C1AE79A1A00F375C0 /* ViewController.m */; };
@@ -31,6 +33,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		04B486451B31690B00039A74 /* VKShowLargeImgCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VKShowLargeImgCollectionViewCell.h; sourceTree = "<group>"; };
+		04B486461B31690B00039A74 /* VKShowLargeImgCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VKShowLargeImgCollectionViewCell.m; sourceTree = "<group>"; };
+		04B4864A1B316E8100039A74 /* VKShowLargeImgData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VKShowLargeImgData.h; sourceTree = "<group>"; };
+		04B4864B1B316E8100039A74 /* VKShowLargeImgData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VKShowLargeImgData.m; sourceTree = "<group>"; };
 		04CF1D411AE79A1A00F375C0 /* ShowLargeImage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShowLargeImage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04CF1D451AE79A1A00F375C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04CF1D461AE79A1A00F375C0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -141,6 +147,10 @@
 				04CF1D711AE7A46900F375C0 /* no_pic@2x.png */,
 				04CF1D6B1AE79A4400F375C0 /* ShowLargeImgView.h */,
 				04CF1D6C1AE79A4400F375C0 /* ShowLargeImgView.m */,
+				04B486451B31690B00039A74 /* VKShowLargeImgCollectionViewCell.h */,
+				04B486461B31690B00039A74 /* VKShowLargeImgCollectionViewCell.m */,
+				04B4864A1B316E8100039A74 /* VKShowLargeImgData.h */,
+				04B4864B1B316E8100039A74 /* VKShowLargeImgData.m */,
 				04CF1D6E1AE79C2300F375C0 /* VKWebImageManager.h */,
 				04CF1D6F1AE79C2300F375C0 /* VKWebImageManager.m */,
 			);
@@ -302,6 +312,8 @@
 			files = (
 				04CF1D4D1AE79A1A00F375C0 /* ViewController.m in Sources */,
 				04CF1D6D1AE79A4400F375C0 /* ShowLargeImgView.m in Sources */,
+				04B486471B31690B00039A74 /* VKShowLargeImgCollectionViewCell.m in Sources */,
+				04B4864C1B316E8100039A74 /* VKShowLargeImgData.m in Sources */,
 				04CF1D4A1AE79A1A00F375C0 /* AppDelegate.m in Sources */,
 				04CF1D471AE79A1A00F375C0 /* main.m in Sources */,
 				04CF1D701AE79C2300F375C0 /* VKWebImageManager.m in Sources */,

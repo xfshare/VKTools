@@ -11,4 +11,5 @@
 @interface ShowLargeImgView : UIView
 - (instancetype)initWithUrl:(NSString *)url;
 - (instancetype)initWithFrame:(CGRect)frame url:(NSString *)url imgW:(CGFloat)width imgH:(CGFloat)height;
+- (instancetype)initWithImages:(NSArray *)imageArr;
 @end

@@ -8,26 +8,31 @@
 
 #import "ShowLargeImgView.h"
 #import "VKWebImageManager.h"
+#import "VKShowLargeImgCollectionViewCell.h"
+#import "VKShowLargeImgData.h"
 
-@interface ShowLargeImgView() <UIScrollViewDelegate>
+@interface ShowLargeImgView() <UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,VKShowLargeImgCollectionViewCellDelegate>
 {
     __block CGFloat imgW;
     __block CGFloat imgH;
     BOOL HorizontalScroll;
     UIImageView *imagev;
     CGPoint frontOffset;
+    
+    NSArray *allImgsInfoArr;
 
 }
 @property (nonatomic,strong)NSString *urlStr;
-
 @property (nonatomic,strong)UIScrollView *scrollV;
+
 @end
 
 @implementation ShowLargeImgView
 @synthesize scrollV;
 
-
-
+#pragma mark -
+#pragma mark 单张图片显示大图
+//-------------------------------- 单张图片显示大图 --------------------------------
 - (instancetype)initWithUrl:(NSString *)url{
     
     CGRect frame = CGRectMake(0,
@@ -112,7 +117,82 @@
     [disVTap requireGestureRecognizerToFail:doubleTap];
     
 }
+//-------------------------------- END --------------------------------
+#pragma mark -
+#pragma mark 多图片显示大图
+- (instancetype)initWithImages:(NSArray *)imageArr{
+    CGRect frame = CGRectMake(0,
+                              0,
+                              [UIScreen mainScreen].bounds.size.width,
+                              [UIScreen mainScreen].bounds.size.height);
+    
+    self = [super initWithFrame:frame];
+    if (self) {
+        allImgsInfoArr = [VKShowLargeImgData getStandLargeImgDataInfo:imageArr];
+        [self buildCollectionView];
+    }
+    return self;
+}
 
+- (void)buildCollectionView{
+    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc]init];
+    [flowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
+    [flowLayout setMinimumInteritemSpacing:0];
+    [flowLayout setMinimumLineSpacing:0];
+    
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.frame  collectionViewLayout:flowLayout];
+    [collectionView setBackgroundColor:[UIColor blackColor]];
+    [collectionView registerClass:[VKShowLargeImgCollectionViewCell class] forCellWithReuseIdentifier:@"VKShowLargeImgCollectionViewCell"];
+    collectionView.delegate = self;
+    collectionView.dataSource = self;
+    collectionView.pagingEnabled = YES;
+    [self addSubview:collectionView];
+}
+
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return allImgsInfoArr.count;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return  1;
+}
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *cellIdentifier = @"VKShowLargeImgCollectionViewCell";
+    VKShowLargeImgCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+
+    cell.selected = NO;
+    cell.data = (VKShowLargeImgData *)[allImgsInfoArr objectAtIndex:indexPath.row];
+    cell.delegate = self;
+    
+    return cell;
+}
+
+#pragma mark - collection layout delegate
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(0, 0, 0, 0);
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return self.frame.size;
+}
+#pragma mark - collection delegate
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"%ld",(long)indexPath.row);
+}
+
+- (void)dismisSelfView{
+    [self disSelfView:nil];
+}
+
+
+#pragma mark -
+#pragma mark Gesture
 - (void) doubleTpaGestureAction:(UITapGestureRecognizer *)tap
 {
     NSLog(@"double tap");
@@ -134,12 +214,17 @@
     
 }
 
+- (void)disSelfView:(UITapGestureRecognizer *)gesture{
+    [self removeFromSuperview];
+}
+
+#pragma mark 设置图片显示Size
 - (void) imageViewFrameWithImageSize:(CGSize)size superFarme:(CGRect)suFrame
 {
     //判断首先缩放的值
     float scaleX = suFrame.size.width/size.width;
     float scaleY = suFrame.size.height/size.height;
-    
+
     //倍数小的，先到边缘
     
     if (scaleX > scaleY)
@@ -160,9 +245,7 @@
     }
 }
 
-- (void)disSelfView:(UITapGestureRecognizer *)gesture{
-    [self removeFromSuperview];
-}
+
 
 #pragma mark - ScrollView delegate
 
