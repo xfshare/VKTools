@@ -37,8 +37,97 @@
     [self buildImageVivew];
     return self;
 }
+#pragma mark -
+#pragma mark delegate
+-(UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView{
+    
+    return imagev;
+}
+-(void)scrollViewDidZoom:(UIScrollView *)scrollView{
+    
+    //显示size
+    CGSize boundsSize = scrollView.bounds.size;
+    CGRect imgFrame = imagev.frame;
+    CGSize contentSize = scrollView.contentSize;
+    
+    //内容中心点
+    CGPoint centerPoint = CGPointMake(contentSize.width/2, contentSize.height/2);
+    // imageV frame 在改变
+    // center horizontally
+    if (imgFrame.size.width <= boundsSize.width)
+    {
+        centerPoint.x = boundsSize.width/2;
+    }
+    
+    // center vertically
+    if (imgFrame.size.height <= boundsSize.height)
+    {
+        centerPoint.y = boundsSize.height/2;
+    }
+    
+    imagev.center = centerPoint;
+    
+}
+
+#pragma mark -
+#pragma mark private method
+- (void) doubleTpaGestureAction:(UITapGestureRecognizer *)tap
+{
+    NSLog(@"double tap");
+    
+    [UIView animateWithDuration:0.2
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                         if(scrollV.zoomScale == scrollV.maximumZoomScale){
+                             scrollV.zoomScale = 1.0;
+                         }else{
+                             scrollV.zoomScale = scrollV.maximumZoomScale;
+                         }
+                         
+                     }
+                     completion:^(BOOL finished) {
+                         
+                     }];
+    
+}
+
+- (void)disSelfView:(UITapGestureRecognizer *)gesture{
+    if ([self.delegate respondsToSelector:@selector(dismisSelfView)]) {
+        [self.delegate dismisSelfView];
+    }
+}
+
+- (void) imageViewFrameWithImageSize:(CGSize)size superFarme:(CGRect)suFrame
+{
+    //判断首先缩放的值
+    float scaleX = suFrame.size.width/size.width;
+    float scaleY = suFrame.size.height/size.height;
+    
+    //倍数小的，先到边缘
+    
+    if (scaleX > scaleY)
+    {
+        //Y方向先到边缘
+        float imgViewWidth = size.width*scaleY;
+        scrollV.maximumZoomScale = suFrame.size.width/imgViewWidth;
+        
+        imagev.frame = (CGRect){suFrame.size.width/2-imgViewWidth/2,0,imgViewWidth,suFrame.size.height};
+    }
+    else
+    {
+        //X先到边缘
+        float imgViewHeight = size.height*scaleX;
+        scrollV.maximumZoomScale = suFrame.size.height/imgViewHeight;
+        
+        imagev.frame = (CGRect){0,suFrame.size.height/2-imgViewHeight/2,suFrame.size.width,imgViewHeight};
+    }
+}
 
 
+
+#pragma mark -
+#pragma mark view
 - (void)buildScrollView{
     scrollV = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame))];
     scrollV.backgroundColor = [UIColor clearColor];
@@ -77,18 +166,19 @@
     [disVTap requireGestureRecognizerToFail:doubleTap];
     
 }
-
+#pragma mark -
+#pragma mark set Method
 - (void)setData:(VKShowLargeImgData *)data{
     _data = data;
     
     if (scrollV || imagev) {
-        [scrollV removeFromSuperview];
-        [imagev removeFromSuperview];
+        scrollV.zoomScale = 1.0;
     }
-    [self buildScrollView];
-    [self buildImageVivew];
 
-    
+    for (UIView *view in imagev.subviews) {
+        [view removeFromSuperview];
+    }
+
     [VKWebImageManager setDownLoadProgressImageWithUrl:_data.imgUrl
                                            OnImageView:imagev
                                                 finish:^(UIImage *image) {
@@ -102,96 +192,7 @@
 
     
 }
-#pragma mark -
-#pragma mark Gesture
-- (void) doubleTpaGestureAction:(UITapGestureRecognizer *)tap
-{
-    NSLog(@"double tap");
-    
-    [UIView animateWithDuration:0.2
-                          delay:0
-                        options:UIViewAnimationOptionCurveLinear
-                     animations:^{
-                         if(scrollV.zoomScale == scrollV.maximumZoomScale){
-                             scrollV.zoomScale = 1.0;
-                         }else{
-                             scrollV.zoomScale = scrollV.maximumZoomScale;
-                         }
-                         
-                     }
-                     completion:^(BOOL finished) {
-                         
-                     }];
-    
-}
 
-- (void)disSelfView:(UITapGestureRecognizer *)gesture{
-//    [self removeFromSuperview];
-    if ([self.delegate respondsToSelector:@selector(dismisSelfView)]) {
-        [self.delegate dismisSelfView];
-    }
-}
-
-- (void) imageViewFrameWithImageSize:(CGSize)size superFarme:(CGRect)suFrame
-{
-    //判断首先缩放的值
-    float scaleX = suFrame.size.width/size.width;
-    float scaleY = suFrame.size.height/size.height;
-    
-    //倍数小的，先到边缘
-    
-    if (scaleX > scaleY)
-    {
-        //Y方向先到边缘
-        float imgViewWidth = size.width*scaleY;
-        scrollV.maximumZoomScale = suFrame.size.width/imgViewWidth;
-        
-        imagev.frame = (CGRect){suFrame.size.width/2-imgViewWidth/2,0,imgViewWidth,suFrame.size.height};
-    }
-    else
-    {
-        //X先到边缘
-        float imgViewHeight = size.height*scaleX;
-        scrollV.maximumZoomScale = suFrame.size.height/imgViewHeight;
-        
-        imagev.frame = (CGRect){0,suFrame.size.height/2-imgViewHeight/2,suFrame.size.width,imgViewHeight};
-    }
-}
-#pragma mark - ScrollView delegate
-
--(UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView{
-    
-    return imagev;
-}
-
-
--(void)scrollViewDidZoom:(UIScrollView *)scrollView{
-    
-    //显示size
-    CGSize boundsSize = scrollView.bounds.size;
-    CGRect imgFrame = imagev.frame;
-    CGSize contentSize = scrollView.contentSize;
-    
-    //内容中心点
-    CGPoint centerPoint = CGPointMake(contentSize.width/2, contentSize.height/2);
-    
-    
-    // imageV frame 在改变
-    // center horizontally
-    if (imgFrame.size.width <= boundsSize.width)
-    {
-        centerPoint.x = boundsSize.width/2;
-    }
-    
-    // center vertically
-    if (imgFrame.size.height <= boundsSize.height)
-    {
-        centerPoint.y = boundsSize.height/2;
-    }
-    
-    imagev.center = centerPoint;
-    
-}
 
 
 @end

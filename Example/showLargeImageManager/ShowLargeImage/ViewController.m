@@ -9,8 +9,10 @@
 #import "ViewController.h"
 #import "ShowLargeImgView.h"
 #import <SDImageCache.h>
-@interface ViewController ()
-
+@interface ViewController ()<ShowLargeImgViewDelegate>
+{
+    BOOL isHiddenStatus;
+}
 @end
 
 @implementation ViewController
@@ -20,10 +22,8 @@
     // Do any additional setup after loading the view, typically from a nib.
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+
+#pragma mark method
 - (IBAction)showImagesAction:(id)sender {
     __unused ShowLargeImgView *showLarge =[[ShowLargeImgView alloc]initWithImages:@[@{@"url":
                                                                                           @"http://c.hiphotos.baidu.com/image/pic/item/f3d3572c11dfa9ec78e256df60d0f703908fc12e.jpg"},
@@ -42,17 +42,48 @@
                                                                                     @{@"url":
                                                                                           @"http://h.hiphotos.baidu.com/image/pic/item/aec379310a55b319ec6546e440a98226cefc1786.jpg"},
                                                                                     @{@"url":
-                                                                                          @"http://b.hiphotos.baidu.com/image/pic/item/3ac79f3df8dcd100dbba92b6718b4710b9122f06.jpg"},]];
-    
+                                                                                          @"http://b.hiphotos.baidu.com/image/pic/item/3ac79f3df8dcd100dbba92b6718b4710b9122f06.jpg"}, ]
+                                                                 firstDisplayPath:9];
+//    showLarge.delegate = self;
+    showLarge.alpha = 0.0;
     [self.view addSubview:showLarge];
+//    isHiddenStatus = YES;
+//    [self setNeedsStatusBarAppearanceUpdate];
+    [UIView animateWithDuration:0.2
+                          delay:0.0
+                        options:UIViewAnimationOptionShowHideTransitionViews
+                     animations:^{
+                         showLarge.alpha = 1.0;
+                     } completion:^(BOOL finished) {
+                         
+                     }];
+    
 }
 - (IBAction)showAction:(UIButton *)sender {
     
 
     
-    __unused ShowLargeImgView *showLarge =[[ShowLargeImgView alloc]initWithUrl:@"http://p4.qhimg.com/dr/250_500_/t01515e2abc19aa8e94.jpg"];
+    __unused ShowLargeImgView *showLarge =[[ShowLargeImgView alloc]initWithImages:@[@{@"url":
+                                                                                          @"http://b.hiphotos.baidu.com/image/pic/item/3ac79f3df8dcd100dbba92b6718b4710b9122f06.jpg"},]];
+    showLarge.delegate = self;
     [self.view addSubview:showLarge];
+    isHiddenStatus = YES;
+    [self setNeedsStatusBarAppearanceUpdate];
     
 }
 
+#pragma mark delegate
+- (void)vk_ShowLargeImgViewDisappear{
+    isHiddenStatus = NO;
+    [self setNeedsStatusBarAppearanceUpdate];
+
+}
+
+#pragma mark statusBar
+- (UIStatusBarStyle)preferredStatusBarStyle{
+    return UIStatusBarStyleDefault;
+}
+- (BOOL)prefersStatusBarHidden{
+    return isHiddenStatus;
+}
 @end
